@@ -1,7 +1,7 @@
 /*
  * CC3PerformanceScene.m
  *
- * cocos3d 2.0.0
+ * Cocos3D 2.0.2
  * Author: Bill Hollings
  * Copyright (c) 2010-2014 The Brenwill Workshop Ltd. All rights reserved.
  * http://www.brenwill.com
@@ -50,7 +50,7 @@
 #define kMascotName				@"cocos2d_3dmodel_unsubdivided"
 
 // File names
-#define kLogoFileName			@"Default.png"
+#define kLogoFileName			@"Cocos3D.png"
 #define kHelloWorldFileName		@"hello-world.pod"
 #define kBeachBallFileName		@"BeachBall.pod"
 #define kGlobeTextureFile		@"Earth_1024.jpg"

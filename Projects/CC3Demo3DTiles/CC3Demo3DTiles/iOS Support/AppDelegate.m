@@ -1,7 +1,7 @@
 /*
  * AppDelegate.m
  *
- * cocos3d 2.0.0
+ * Cocos3D 2.0.2
  * Author: Bill Hollings
  * Copyright (c) 2011-2014 The Brenwill Workshop Ltd. All rights reserved.
  * http://www.brenwill.com
@@ -109,6 +109,7 @@
 #endif	// CC3_CC2_1
 
 	[_window makeKeyAndVisible];
+	[director.view layoutSubviews];		// iOS8 does not invoke layoutSubviews from makeKeyAndVisible
 	
 	
 	// ******** START OF COCOS3D SETUP CODE... ********
@@ -123,21 +124,8 @@
 	[CCDirector.sharedDirector pause];
 }
 
-/** Resume the cocos3d/cocos2d action. */
--(void) resumeApp { [CCDirector.sharedDirector resume]; }
-
 -(void) applicationDidBecomeActive: (UIApplication*) application {
-	
-	// Workaround to fix the issue of drop to 40fps on iOS4.X on app resume.
-	// Adds short delay before resuming the app.
-	[NSTimer scheduledTimerWithTimeInterval: 0.25
-									 target: self
-								   selector: @selector(resumeApp)
-								   userInfo: nil
-									repeats: NO];
-	
-	// If dropping to 40fps is not an issue, remove above, and uncomment the following to avoid delay.
-	//	[self resumeApp];
+	[CCDirector.sharedDirector resume];
 }
 
 -(void) applicationDidReceiveMemoryWarning: (UIApplication*) application {

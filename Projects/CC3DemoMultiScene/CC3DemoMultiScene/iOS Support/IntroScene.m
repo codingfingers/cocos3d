@@ -1,7 +1,7 @@
 /*
  * IntroScene.M
  *
- * cocos3d 2.0.0
+ * Cocos3D 2.0.2
  * Author: Bill Hollings
  * Copyright (c) 2011-2014 The Brenwill Workshop Ltd. All rights reserved.
  * http://www.brenwill.com
@@ -75,6 +75,11 @@
 	CGSize cs = self.contentSize;
 	_background.contentSize = cs;
 	_label.position = ccp(cs.width / 2.0f, cs.height / 2.0f);
+
+#if !CC3_CC2_1
+	_label.fontSize = (_nominalLabelSize.width > cs.width * 0.9) ? 18.0f : 36.0f;
+#endif	// !CC3_CC2_1
+
 }
 
 #if CC3_CC2_1
@@ -108,7 +113,8 @@
 	// Add a label, position it by its center, and scale it for the device
 	_label = [CCLabelTTF labelWithString: @"Use the buttons below\nto select a demo"
 								fontName: @"Chalkduster"
-								fontSize: 36.0f];
+								fontSize: 18.0f];
+	_nominalLabelSize = _label.contentSizeInPixels;
 
 // Align horizontally
 #if CC3_CC2_1												// Cocos2D 1.1 has not alignment option

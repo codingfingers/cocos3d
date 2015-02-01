@@ -1,7 +1,7 @@
 /*
  * CC3UtilityMeshNodes.m
  *
- * cocos3d 2.0.0
+ * Cocos3D 2.0.2
  * Author: Bill Hollings
  * Copyright (c) 2010-2014 The Brenwill Workshop Ltd. All rights reserved.
  * http://www.brenwill.com
@@ -279,7 +279,6 @@
 -(id) initWithTag: (GLuint) aTag withName: (NSString*) aName {
 	if ( (self = [super initWithTag: aTag withName: aName]) ) {
 		self.shouldDrawInClipSpace = YES;
-		self.shouldUseLighting = NO;
 	}
 	return self;
 }

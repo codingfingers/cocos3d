@@ -1,7 +1,7 @@
 /*
  * CC3PointParticles.m
  *
- * cocos3d 2.0.0
+ * Cocos3D 2.0.2
  * Author: Bill Hollings
  * Copyright (c) 2010-2014 The Brenwill Workshop Ltd. All rights reserved.
  * http://www.brenwill.com
@@ -60,6 +60,11 @@
 @synthesize particleSizeMinimum=_particleSizeMinimum, particleSizeMaximum=_particleSizeMaximum;
 @synthesize particleSizeAttenuation=_particleSizeAttenuation;
 @synthesize shouldNormalizeParticleSizesToDevice=_shouldNormalizeParticleSizesToDevice;
+
+-(void) dealloc {
+	[self.activeCamera removeTransformListener: self];
+	[super dealloc];
+}
 
 -(GLfloat) normalizedParticleSize {
 	return [self normalizeParticleSizeToDevice: self.particleSize];

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# Cocos3D 2.0.0
+# Cocos3D 2.0.2
 # Author: Bill Hollings
 # Copyright (c) 2010-2014 The Brenwill Workshop Ltd. All rights reserved.
 # http://www.brenwill.com
@@ -34,6 +34,7 @@ XCODE_TEMPLATE_DIR="$HOME/Library/Developer/Xcode/Templates"
 CC2_DIR=cocos2d
 CC2_CHPMK_DIR=cocos2d-chipmunk
 CC2_SRC=
+REZ_SRC_DIR="Projects/Common/Resources"
 
 COLOREND=$(tput sgr0)
 GREEN=$(tput setaf 2)
@@ -71,7 +72,7 @@ previously installed the corresponding version of Cocos2D.
 The arg ${BOLD}"cocos2d-location"${COLOREND} may also be a relative or absolute path
 to a specific Cocos2D distribution retrieved from GitHub. For example:
 
-    $0 -2 "../cocos2d-iphone-release-3.0"
+    $0 -2 "../cocos2d-iphone-release-3.2"
 
 If the ${BOLD}"cocos2d-location"${COLOREND} arg is omitted, the installer will link to the
 latest installed version of Cocos2D.
@@ -123,14 +124,28 @@ get_cc2_location() {
 	# Resolve the Cocos2D distribution directory to an absolute path
 	if [[ $CC2_DIST_DIR != /* ]]; then
 		CC2_DIST_DIR="$PWD/$CC2_DIST_DIR"
-		echo "${BOLD}Please see the README.md file for instructions on ensuring the Cocos3D demo apps are configured to use the version of Cocos2D you are using.${COLOREND}"
+		print_version_warning
 	fi
 
 	# Make sure Cocos2D distribution directory exists
 	if [[ ! -d "$CC2_DIST_DIR" ]];  then
-		echo
-		echo "${RED}✖︎${COLOREND}  The Cocos2D distribution directory '$CC2_DIST_DIR' could not be found! Make sure you have installed this version of Cocos2D before installing Cocos3D."
-		echo
+		if [[ $CC2_SRC == "v3" ]]; then
+			echo
+			echo "${RED}✖︎${COLOREND}  The Cocos2D v3 Xcode project template directory could not be found. Starting with ${BOLD}Cocos2D 3.2${COLOREND}, Cocos2D does not install Xcode project templates. If you are using ${BOLD}Cocos2D 3.2${COLOREND} or later, you cannot use the v3 option shortcut, and must specify the path (relative or absolute) to the Cocos2D installation directory."
+			echo
+		elif [[ $CC2_SRC == "v2" ]]; then
+			echo
+			echo "${RED}✖︎${COLOREND}  The Cocos2D v2 Xcode project template directory could not be found. Make sure you have installed this version of Cocos2D before installing Cocos3D."
+			echo
+		elif [[ $CC2_SRC == "v1" ]]; then
+			echo
+			echo "${RED}✖︎${COLOREND}  The Cocos2D v1 Xcode project template directory could not be found. Make sure you have installed this version of Cocos2D before installing Cocos3D."
+			echo
+		else
+			echo
+			echo "${RED}✖︎${COLOREND}  The Cocos2D distribution directory '$CC2_DIST_DIR' could not be found! Make sure you have specified the correct path to the Cocos2D installation directory using the -2 option."
+			echo
+		fi
 		exit 1
 	fi
 
@@ -138,8 +153,7 @@ get_cc2_location() {
 
 print_version_warning() {
 	echo
-	echo "${BOLD}You are linking the Cocos3D demo apps to Cocos2D $CC2_SRC."
-	echo "Please see the README.md file for instructions on configuring the Cocos3D demo apps to use this version of Cocos2D.${COLOREND}"
+	echo "${BOLD}You are linking the Cocos3D demo apps to Cocos2D $CC2_SRC. Please see the README.md file for instructions on configuring the Cocos3D demo apps to use this version of Cocos2D.${COLOREND}"
 }
 
 # Outputs a banner header
@@ -172,6 +186,17 @@ copy_files(){
 	print_ok
 }
 
+# Copies files in directory $1 to $2, deleting and recreating the directory in the process.
+# Symbolic links are resolved and the underlying files copied.
+# Arg $3 is used to output user feedback about what is being copied.
+replace_dir_resolve_simlinks(){
+	echo -n "...copying $3..."
+	rm -rf "$2"
+	mkdir -p "$2"
+	cp -pRL "$1" "$2"
+	print_ok
+}
+
 check_dir(){
 	if [[ ! -d "$1" ]];  then
 		mkdir -p "$1"
@@ -195,7 +220,6 @@ copy_project_templates() {
 
 	CC3_TEMPLATE_DIR="$XCODE_TEMPLATE_DIR/Cocos3D"
 	TEMPLATE_SRC_DIR="Templates/Xcode"
-	REZ_SRC_DIR="Projects/Common/Resources"
 	SUPPORT_DIR="Support"
 	BASE_DIR="$SUPPORT_DIR/Base"
 	BUNDLE_DIR="$SUPPORT_DIR/Bundle"
@@ -316,6 +340,11 @@ link_cocos2d_templates_v1() {
 	# CocosDenshion Extras
 	SRC_DIR="$CC2_DIST_DIR/lib_cocosdenshionextras.xctemplate/libs"
 	link_dir "$SRC_DIR/CocosDenshionExtras" "$CC2_DIR" "CocosDenshion Extras"
+
+	# FontLabel
+	SRC_DIR="$CC2_DIST_DIR/lib_fontlabel.xctemplate/libs"
+	link_dir "$SRC_DIR/FontLabel" "$CC2_DIR" "FontLabel"
+	copy_file "LICENSE_FontLabel.txt" "$SRC_DIR" "$CC2_DIR"
 
 	# Chipmunk library
 	SRC_DIR="$CC2_DIST_DIR/lib_chipmunk.xctemplate/libs"
@@ -452,6 +481,43 @@ link_cocos2d_libs() {
 	echo Finished linking Cocos2D.
 }
 
+# Copies the library directories and resources to the hello, world template project
+copy_to_template() {
+	CC3_HW_DIR="Projects/CC3HelloWorld"
+	CC3_HW_REZ_DIR="$CC3_HW_DIR/ProjectFiles/Resources"
+	CC3_HW_NAME="Hello World template project"
+
+	# Copy Cocos2D & Cocos3D library folders to project
+	replace_dir_resolve_simlinks "$CC2_DIR/" "$CC3_HW_DIR/cocos2d" "Cocos2D to the $CC3_HW_NAME"
+	replace_dir_resolve_simlinks "$CC2_CHPMK_DIR/" "$CC3_HW_DIR/cocos2d-chipmunk" "Cocos2D Chipmunk to the $CC3_HW_NAME"
+	replace_dir_resolve_simlinks "cocos3d/" "$CC3_HW_DIR/cocos3d" "Cocos3D to the $CC3_HW_NAME"
+	copy_file "LICENSE_cocos3d.txt" "." "$CC3_HW_DIR"
+
+	# Copy default shaders, resources and images to project
+	replace_dir_resolve_simlinks "cocos3d-GLSL/" "$CC3_HW_DIR/ProjectFiles/cocos3d-GLSL" "Cocos3D default shaders to the $CC3_HW_NAME"
+	replace_dir_resolve_simlinks "Projects/Common/Images-iOS.xcassets/" "$CC3_HW_DIR/ProjectFiles/iOS Support/Images-iOS.xcassets" "iOS app icons to the $CC3_HW_NAME"
+	replace_dir_resolve_simlinks "Projects/Common/Images-OSX.xcassets/" "$CC3_HW_DIR/ProjectFiles/OSX Support/Images-OSX.xcassets" "OSX app icons to the $CC3_HW_NAME"
+
+	echo -n "...copying resources to the $CC3_HW_NAME..."
+	check_dir "$CC3_HW_REZ_DIR"
+	copy_file "hello-world.pod" "Models/Hello World" "$CC3_HW_REZ_DIR"
+	copy_file "BrushedSteel.png" "$REZ_SRC_DIR/Masks" "$CC3_HW_REZ_DIR"
+	copy_file "fps_images.png" "$REZ_SRC_DIR" "$CC3_HW_REZ_DIR"
+	copy_file "fps_images_1.png" "$REZ_SRC_DIR" "$CC3_HW_REZ_DIR"
+	copy_file "fps_images-hd.png" "$REZ_SRC_DIR" "$CC3_HW_REZ_DIR"
+	copy_file "fps_images-ipadhd.png" "$REZ_SRC_DIR" "$CC3_HW_REZ_DIR"
+	print_ok
+}
+
+# Copies the library directories to the static library template project
+copy_to_statlib() {
+	CC3_SL_DIR="Projects/CC3StatLib"
+	CC3_SL_NAME="Cocos3D static library template project"
+
+	replace_dir_resolve_simlinks "cocos3d/" "$CC3_SL_DIR/cocos3d" "Cocos3D to the $CC3_SL_NAME"
+	replace_dir_resolve_simlinks "cocos3d-GLSL/" "$CC3_SL_DIR/cocos3d-GLSL" "Cocos3D default shaders to the $CC3_SL_NAME"
+	copy_file "LICENSE_cocos3d.txt" "." "$CC3_SL_DIR"
+}
 
 
 # ----------------------------MAIN ENTRY POINT ----------------------------------
@@ -481,6 +547,10 @@ get_cc2_location
 copy_project_templates
 
 link_cocos2d_libs
+
+copy_to_template
+
+copy_to_statlib
 
 echo
 printf "${GREEN}✔${COLOREND} ${BOLD}Done!${COLOREND}\n"

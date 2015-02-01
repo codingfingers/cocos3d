@@ -1,7 +1,7 @@
 /*
  * CC3RenderSurfaces.m
  *
- * cocos3d 2.0.0
+ * Cocos3D 2.0.2
  * Author: Bill Hollings
  * Copyright (c) 2011-2014 The Brenwill Workshop Ltd. All rights reserved.
  * http://www.brenwill.com
@@ -1222,6 +1222,13 @@
 	((CC3SurfaceSection*)self.viewSurface).origin = viewSurfaceOrigin;
 }
 
+/** After setting the size of each surface, ensure we leave the view surface active for Cocos2D. */
+-(void) setSize: (CC3IntSize) size {
+	if ( CC3IntSizesAreEqual(size, self.size) ) return;
+	[super setSize: size];
+	[self.viewSurface activate];
+}
+
 /**
  * Lazily create a surface, using the color format of the view's color surface,
  * and with a new non-multisampling and non-stencilling depth buffer.
@@ -1239,7 +1246,7 @@
 		
 		// Don't need stencil for picking, but otherwise match the rendering depth format
 		if (viewDepthFormat) {
-			if ( CC3DepthFormatIncludesStencil(viewDepthFormat) ) viewDepthFormat = GL_DEPTH_COMPONENT16;
+			if ( CC3DepthFormatIncludesStencil(viewDepthFormat) ) viewDepthFormat = GL_DEPTH_COMPONENT24;
 			pickSurf.depthAttachment = [CC3GLRenderbuffer renderbufferWithPixelFormat: viewDepthFormat];
 		}
 		
@@ -1339,7 +1346,7 @@
 									 NSStringFromCC3IntSize(self.multisamplingSize)]
 			 : @"with no multisampling"));
 	
-	// After validating each surface, ensure we leave the rendering surface active for Cocos2D
+	// After setting the size of each surface, ensure we leave the rendering surface active for Cocos2D
 	[self.renderingSurface activate];
 }
 

@@ -1,7 +1,7 @@
 /*
  * CC3Shaders.h
  *
- * cocos3d 2.0.0
+ * Cocos3D 2.0.2
  * Author: Bill Hollings
  * Copyright (c) 2011-2014 The Brenwill Workshop Ltd. All rights reserved.
  * http://www.brenwill.com
@@ -681,6 +681,10 @@
  * fragment shaders are provided. If you create this instance without shaders and add them
  * later, you can invoke this method once the vertexShader and fragmentShader properties
  * have been set, and the link method has been invoked.
+ *
+ * Prewarming is always performed on shader programs loaded on the background thread, but is
+ * only performed on shader programs loaded on the foreground thread during the preloading phase.
+ * This is to avoid prewarming activity during lazy loading of shader programs during rendering.
  */
 -(void) prewarm;
 

@@ -1,7 +1,7 @@
 /*
  * CC3DemoMashUpAppDelegate.m
  *
- * cocos3d 2.0.0
+ * Cocos3D 2.0.2
  * Author: Bill Hollings
  * Copyright (c) 2011-2014 The Brenwill Workshop Ltd. All rights reserved.
  * http://www.brenwill.com
@@ -45,10 +45,13 @@
 	
 	// connect the OpenGL view with the director
 	[director setView: _glView];
-	
-	// Must use kCCDirectorResize_NoScale to allow the CC3Layer to automatically fill
-	// the window as the window is resized, and to accurately track mouse events.
+
+	// Must use kCCDirectorResize_NoScale to allow the CC3Layer to automatically fill the
+	// window as the window is resized, and to accurately track mouse events. For Mac Retina,
+	// we also need to force the content scale back to 1 and reshape the projection accordingly.
 	[director setResizeMode: kCCDirectorResize_NoScale];
+	[director setContentScaleFactor: 1.0f];
+	[_glView reshape];
 	
 	// Enable "moving" mouse event. Default no.
 	[_window setAcceptsMouseMovedEvents: NO];

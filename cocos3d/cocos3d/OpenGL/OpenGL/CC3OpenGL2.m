@@ -1,7 +1,7 @@
 /*
  * CC3OpenGL2.m
  *
- * cocos3d 2.0.0
+ * Cocos3D 2.0.2
  * Author: Bill Hollings
  * Copyright (c) 2010-2014 The Brenwill Workshop Ltd. All rights reserved.
  * http://www.brenwill.com
@@ -43,6 +43,9 @@
 @end
 
 @implementation CC3OpenGL2
+
+/** glFinish can crash with EXC_BAD_ACCESS on OpenGL under OSX. */
+-(void) finish { }
 
 
 #pragma mark Capabilities

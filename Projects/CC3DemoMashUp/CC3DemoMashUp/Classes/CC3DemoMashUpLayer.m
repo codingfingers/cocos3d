@@ -1,7 +1,7 @@
 /*
  * CC3DemoMashUpLayer.m
  *
- * cocos3d 2.0.0
+ * Cocos3D 2.0.2
  * Author: Bill Hollings
  * Copyright (c) 2010-2014 The Brenwill Workshop Ltd. All rights reserved.
  * http://www.brenwill.com
@@ -125,7 +125,7 @@
 	// If you want to see the size of the Joystick backdrop, comment out the line above and uncomment the
 	// following line, which include a simple backdrop image. The thumb and backdrop can be any CCNode.
 //	_directionJoystick = [Joystick joystickWithThumb: jsThumb
-//										 andBackdrop: [CCSprite spriteWithImageNamed: @"Icon-76.png"]];
+//										 andBackdrop: [CCSprite spriteWithImageNamed: @"BrushedSteel.png"]];
 	
 	CGPoint jsMiddle = _directionJoystick.anchorPointInPoints;
 	_directionJoystick.position = ccp(jsMiddle.x + kJoystickPadding, jsMiddle.y + kJoystickPadding);
@@ -456,6 +456,8 @@
 	else
 		[self openGlobeHUDFromTouchAt: touchPoint];
 }
+
+-(BOOL) isShowingHUD { return (_hudLayer != nil); }
 
 
 #pragma mark Touch handling

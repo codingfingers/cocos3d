@@ -1,7 +1,7 @@
 /**
  * CC3Node.m
  *
- * cocos3d 2.0.0
+ * Cocos3D 2.0.2
  * Author: Bill Hollings
  * Copyright (c) 2010-2014 The Brenwill Workshop Ltd. All rights reserved.
  * http://www.brenwill.com
@@ -63,6 +63,7 @@
 @synthesize shouldUseFixedBoundingVolume=_shouldUseFixedBoundingVolume;
 @synthesize shouldStopActionsWhenRemoved=_shouldStopActionsWhenRemoved;
 @synthesize cameraDistanceProduct=_cameraDistanceProduct;
+@synthesize touchEnabled=_touchEnabled;
 
 -(void) dealloc {
 	self.target = nil;							// Removes myself as listener
@@ -2029,10 +2030,6 @@ static GLuint lastAssignedNodeTag;
 
 
 #pragma mark Touch handling
-
--(BOOL) isTouchEnabled { return _touchEnabled; }
-
--(void) setTouchEnabled: (BOOL) canTouch { _touchEnabled = canTouch; }
 
 // Deprecated
 -(void) setIsTouchEnabled: (BOOL) canTouch { self.touchEnabled = canTouch; }

@@ -1,7 +1,7 @@
 /*
  * CC3PerformanceAppDelegate.m
  *
- * cocos3d 2.0.0
+ * Cocos3D 2.0.2
  * Author: Bill Hollings
  * Copyright (c) 2011-2014 The Brenwill Workshop Ltd. All rights reserved.
  * http://www.brenwill.com
@@ -81,7 +81,7 @@
 
 #if !CC3_CC2_1
 /**
- * In cocos2d 2.x, the view controller and CCDirector are one and the same, and we create the
+ * In Cocos2D 2.x, the view controller and CCDirector are one and the same, and we create the
  * controller using the singleton mechanism. To establish the correct CCDirector/UIViewController
  * class, this MUST be performed before any other references to the CCDirector singleton!!
  *
@@ -106,7 +106,7 @@
 #else
 
 /**
- * In cocos2d 1.x, the view controller and CCDirector are different objects.
+ * In Cocos2D 1.x, the view controller and CCDirector are different objects.
  *
  * NOTE: As of iOS6, supported device orientations are an intersection of the mask established for the
  * UIViewController (as set in this method here), and the values specified in the project 'Info.plist'
@@ -142,7 +142,7 @@
 
 -(BOOL) application: (UIApplication*) application didFinishLaunchingWithOptions: (NSDictionary*) launchOptions {
 	
-	// Establish the view controller and CCDirector (in cocos2d 2.x, these are one and the same)
+	// Establish the view controller and CCDirector (in Cocos2D 2.x, these are one and the same)
 	[self establishDirectorController];
 	
 	// Create the window, make the controller (and its view) the root of the window, and present the window
@@ -150,6 +150,7 @@
 	[_window addSubview: _viewController.view];
 	_window.rootViewController = _viewController;
 	[_window makeKeyAndVisible];
+	[_viewController.view layoutSubviews];		// iOS8 does not invoke layoutSubviews from makeKeyAndVisible
 	
 	// Set to YES for Augmented Reality 3D overlay on device camera.
 	// This must be done after the window is made visible!
@@ -168,21 +169,8 @@
 	[_viewController pauseAnimation];
 }
 
-/** Resume the cocos3d/cocos2d action. */
--(void) resumeApp { [_viewController resumeAnimation]; }
-
 -(void) applicationDidBecomeActive: (UIApplication*) application {
-	
-	// Workaround to fix the issue of drop to 40fps on iOS4.X on app resume.
-	// Adds short delay before resuming the app.
-	[NSTimer scheduledTimerWithTimeInterval: 0.25
-									 target: self
-								   selector: @selector(resumeApp)
-								   userInfo: nil
-									repeats: NO];
-	
-	// If dropping to 40fps is not an issue, remove above, and uncomment the following to avoid delay.
-	//	[self resumeApp];
+	[CCDirector.sharedDirector resume];
 }
 
 -(void) applicationDidReceiveMemoryWarning: (UIApplication*) application {

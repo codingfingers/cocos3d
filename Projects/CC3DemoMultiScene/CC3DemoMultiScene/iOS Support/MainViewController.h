@@ -1,7 +1,7 @@
 /*
  * MainViewController.h
  *
- * cocos3d 2.0.0
+ * Cocos3D 2.0.2
  * Author: Bill Hollings
  * Copyright (c) 2011-2014 The Brenwill Workshop Ltd. All rights reserved.
  * http://www.brenwill.com
@@ -28,6 +28,8 @@
  */
 
 #import <UIKit/UIKit.h>
+#import "CC3DeviceCameraOverlayUIViewController.h"
+
 
 /**
  * Identifies the types of scenes that can be selected by the scene selector control.
@@ -61,6 +63,7 @@ typedef enum {
 	UISegmentedControl* _sceneSelectorControl;
 	UIActivityIndicatorView* _progressView;
 	SelectedScene _selectedScene;
+	CC3DeviceCameraOverlayUIViewController* _deviceCameraController;
 }
 
 /** 
